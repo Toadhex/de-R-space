@@ -106,4 +106,5 @@ TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 5 & FT3 >= 4 | FT3 == 0.00)
 TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
 
 remove(TSHFilterCUMFreq)
+.
 
