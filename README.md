@@ -82,4 +82,27 @@ FT4_2 + geom_boxplot()
 FT3_2 <-ggplot(TSHFilter, aes(y = FT3))
 FT3_2 + geom_boxplot()
 
+#Berekenen cumulatieve frequentie TSH
+p <-ggplot(TSHFilter, aes(x = TSH))
+p + stat_ecdf()
 
+#Berekenen cumulatieve frequentie FT4
+l <-ggplot(TSHFilter, aes(x = FT4))
+l + stat_ecdf()
+
+#Berekenen cumulatieve frequentie FT3
+u <-ggplot(TSHFilter, aes(x = FT3))
+u + stat_ecdf()
+
+#Verander NA naar 0
+TSHFilter$TSH[is.na(TSHFilter$TSH)] <- 0
+TSHFilter$FT4[is.na(TSHFilter$FT4)] <- 0
+TSHFilter$FT3[is.na(TSHFilter$FT3)] <- 0
+
+#TSH waarden buiten het visuele lineaire gebied filtered
+TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 5 & FT3 >= 4 | FT3 == 0.00)
+
+#Verander 0 terug naar NA
+TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
+
+remove(TSHFilterCUMFreq)
