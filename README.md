@@ -6,7 +6,13 @@ library(tidyr)
 library(ggplot2)
 
 #Importeren Excel bestand
-TSH <- read_excel("DAS_DTD_8/TSH.xlsx")
+TSH <- library(readxl)
+url <- "https://github.com/Toadhex/de-R-space/raw/master/TSH.xlsx"
+destfile <- "TSH.xlsx"  
+curl::curl_download(url, destfile) 
+TSH <- read_excel(destfile, col_types = c("text", 
+                                          "text", "text", "text", "numeric", "numeric", 
+                                          "numeric", "skip"))
 
 #Datatabel weergeven in nieuwe tab
 View(TSH)
@@ -44,22 +50,22 @@ FT4_1 + geom_boxplot()
 FT3_1 <-ggplot(data = TSH, aes(y = FT3))
 FT3_1 + geom_boxplot()
 
-#Criteria van Chauvenette toepassen op TSH, berekende waarden toegevoegd in een nieuwe kolom genaam 'TSHChauvv'
-TSH$TSHChauvv <- (TSH[,5]-2.301)/2.813338
+#Criteria van Chauvenette toepassen op TSH, berekende waarden toegevoegd in een nieuwe kolom genaam 'TSHC'
+TSH$TSHC <- (TSH[,5]-2.301)/2.813338
 
-#Criteria van Chauvenette toepassen op FT4, berekende waarden toegevoegd in een nieuwe kolom genaam 'FT4Chauva'
-TSH$FT4Chauva <- (TSH[,6]-16.46)/3.083652
+#Criteria van Chauvenette toepassen op FT4, berekende waarden toegevoegd in een nieuwe kolom genaam 'FT4C'
+TSH$FT4C <- (TSH[,6]-16.46)/3.083652
 
-#Criteria van Chauvenette toepassen op FT3, berekende waarden toegevoegd in een nieuwe kolom genaam 'FT3Chauv'
-TSH$FT3Chauv <- (TSH[,7]-4.668)/1.464226
+#Criteria van Chauvenette toepassen op FT3, berekende waarden toegevoegd in een nieuwe kolom genaam 'FT3C'
+TSH$FT3C <- (TSH[,7]-4.668)/1.464226
 
 #Verander NA naar 0
-TSH$TSHChauvv[is.na(TSH$TSHChauvv)] <- 0
-TSH$FT4Chauva[is.na(TSH$FT4Chauva)] <- 0
-TSH$FT3Chauv[is.na(TSH$FT3Chauv)] <- 0
+TSH$TSHC[is.na(TSH$TSHC)] <- 0
+TSH$FT4C[is.na(TSH$FT4C)] <- 0
+TSH$FT3C[is.na(TSH$FT3C)] <- 0
 
 #TSH waarden buiten het kritiekegebied filtered
-TSHFilter <- filter (TSH, TSHChauvv < 3.49, FT4Chauva < 3.49, FT3Chauv < 3.49)
+TSHFilter <- filter (TSH, TSHC < 3.49, FT4C < 3.49, FT3C < 3.49)
 
 #Verander 0 terug naar NA
 TSHFilter <- na_if(TSHFilter, 0)
@@ -76,4 +82,40 @@ FT4_2 + geom_boxplot()
 FT3_2 <-ggplot(TSHFilter, aes(y = FT3))
 FT3_2 + geom_boxplot()
 
+#Berekenen cumulatieve frequentie TSH
+p <-ggplot(TSHFilter, aes(x = TSH))
+p + stat_ecdf()
 
+#Berekenen cumulatieve frequentie FT4
+l <-ggplot(TSHFilter, aes(x = FT4))
+l + stat_ecdf()
+
+#Berekenen cumulatieve frequentie FT3
+u <-ggplot(TSHFilter, aes(x = FT3))
+u + stat_ecdf()
+
+#Verander NA naar 0
+TSHFilter$TSH[is.na(TSHFilter$TSH)] <- 0
+TSHFilter$FT4[is.na(TSHFilter$FT4)] <- 0
+TSHFilter$FT3[is.na(TSHFilter$FT3)] <- 0
+
+#TSH waarden buiten het visuele lineaire gebied filtered
+TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 5 & FT3 >= 4 | FT3 == 0.00, TSH <= 2.2 & TSH >= 1 | TSH == 0.00, FT4 <= 18 & FT4 >= 13.5 | FT4 == 0.00)
+
+#Verander 0 terug naar NA
+TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
+
+#Boxplot FT3 na lineaire filter
+m <- ggplot(TSHFilterCUMFreq, aes(y = FT3))
+m + geom_boxplot()
+
+#Boxplot TSH na lineaire filter
+n <- ggplot(TSHFilterCUMFreq, aes(y = TSH))
+n + geom_boxplot()
+
+#Boxplot FT4 na lineaire filter
+b <- ggplot(TSHFilterCUMFreq, aes(y = FT4))
+b + geom_boxplot()
+
+
+remove(TSHFilterCUMFreq)
