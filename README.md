@@ -6,7 +6,13 @@ library(tidyr)
 library(ggplot2)
 
 #Importeren Excel bestand
-TSH <- read_excel("DAS_DTD_8/TSH.xlsx")
+TSH <- library(readxl)
+url <- "https://github.com/Toadhex/de-R-space/raw/master/TSH.xlsx"
+destfile <- "TSH.xlsx"  
+curl::curl_download(url, destfile) 
+TSH <- read_excel(destfile, col_types = c("text", 
+                                          "text", "text", "text", "numeric", "numeric", 
+                                          "numeric", "skip"))
 
 #Datatabel weergeven in nieuwe tab
 View(TSH)
