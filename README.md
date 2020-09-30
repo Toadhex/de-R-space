@@ -76,4 +76,4 @@ FT4_2 + geom_boxplot()
 FT3_2 <-ggplot(TSHFilter, aes(y = FT3))
 FT3_2 + geom_boxplot()
 
-
+geef mij lik M
