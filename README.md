@@ -107,4 +107,3 @@ TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
 
 remove(TSHFilterCUMFreq)
 
-.
