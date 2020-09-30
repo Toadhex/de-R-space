@@ -50,22 +50,22 @@ FT4_1 + geom_boxplot()
 FT3_1 <-ggplot(data = TSH, aes(y = FT3))
 FT3_1 + geom_boxplot()
 
-#Criteria van Chauvenette toepassen op TSH, berekende waarden toegevoegd in een nieuwe kolom genaam 'TSHChauvv'
-TSH$TSHChauvv <- (TSH[,5]-2.301)/2.813338
+#Criteria van Chauvenette toepassen op TSH, berekende waarden toegevoegd in een nieuwe kolom genaam 'TSHC'
+TSH$TSHC <- (TSH[,5]-2.301)/2.813338
 
-#Criteria van Chauvenette toepassen op FT4, berekende waarden toegevoegd in een nieuwe kolom genaam 'FT4Chauva'
-TSH$FT4Chauva <- (TSH[,6]-16.46)/3.083652
+#Criteria van Chauvenette toepassen op FT4, berekende waarden toegevoegd in een nieuwe kolom genaam 'FT4C'
+TSH$FT4C <- (TSH[,6]-16.46)/3.083652
 
-#Criteria van Chauvenette toepassen op FT3, berekende waarden toegevoegd in een nieuwe kolom genaam 'FT3Chauv'
-TSH$FT3Chauv <- (TSH[,7]-4.668)/1.464226
+#Criteria van Chauvenette toepassen op FT3, berekende waarden toegevoegd in een nieuwe kolom genaam 'FT3C'
+TSH$FT3C <- (TSH[,7]-4.668)/1.464226
 
 #Verander NA naar 0
-TSH$TSHChauvv[is.na(TSH$TSHChauvv)] <- 0
-TSH$FT4Chauva[is.na(TSH$FT4Chauva)] <- 0
-TSH$FT3Chauv[is.na(TSH$FT3Chauv)] <- 0
+TSH$TSHC[is.na(TSH$TSHC)] <- 0
+TSH$FT4C[is.na(TSH$FT4C)] <- 0
+TSH$FT3C[is.na(TSH$FT3C)] <- 0
 
 #TSH waarden buiten het kritiekegebied filtered
-TSHFilter <- filter (TSH, TSHChauvv < 3.49, FT4Chauva < 3.49, FT3Chauv < 3.49)
+TSHFilter <- filter (TSH, TSHC < 3.49, FT4C < 3.49, FT3C < 3.49)
 
 #Verander 0 terug naar NA
 TSHFilter <- na_if(TSHFilter, 0)
