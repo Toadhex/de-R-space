@@ -5,6 +5,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(data.table)
+library(ggpmisc)
 
 #Importeren Excel bestand
 TSH <- library(readxl)
@@ -129,6 +130,22 @@ setDT(TSHcsumdata, keep.rownames = TRUE)
 
 #TSH regressielijn
 plot(TSHcsumdata)
+
+TSHcsumdata$rn <- as.numeric(as.character(TSHcsumdata$rn))
+
+TSHRegLijn <- ggplot(TSHcsumdata, aes(x = TSHcsum, y = rn)) + geom_point(shape=1) + geom_smooth(method = "lm", se=FALSE, color="black", formula = y ~ x)
+TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "TSH waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie (%)")
+TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn") +  annotate("rect", xmin = 0.00, xmax = 0.1, ymin = -0.056, ymax = -0.044, fill="white", colour="red") + annotate("text", x = 0.05, y = -0.05, label = equation(fit), parse = TRUE)
+TSHRegLijn 
+
+
+TSHRegLijn
+
+fit <- lm(formula = rn ~ as.matrix.TSHcsum., data = TSHcsumdata)
+coefficients(fit)
+
+
+
 
 #Cumulatieve frequentietabel van lineaire deel FT4
 FT4tab <- table(TSHFilterCUMFreq$FT4, exclude = NULL)
