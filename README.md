@@ -4,6 +4,7 @@ library(pacman)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(data.table)
 
 #Importeren Excel bestand
 TSH <- library(readxl)
@@ -118,11 +119,16 @@ b <- ggplot(TSHFilterCUMFreq, aes(y = FT4))
 b + geom_boxplot()
 
 tab <- table(TSHFilterCUMFreq$TSH, exclude = NULL)
-csum <- cumsum(tab)
-TSHFilterCUMFreq <- csum
+csum <- cumsum((tab/ 7538)*100)
+csum
 
-View(csum)
-csum$TSHCRF <- (csum[, 0]/ 7538)
+csumdata <- data.frame(as.matrix(csum))
+setDT(csumdata, keep.rownames = TRUE)
 
+j <- ggplot(csum)
+j + geom_dotplot()
+
+plot(csumdata)
+view(csum)
 
 remove(TSHFilterCUMFreq)
