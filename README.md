@@ -84,16 +84,16 @@ FT3_2 <-ggplot(TSHFilter, aes(y = FT3))
 FT3_2 + geom_boxplot()
 
 #Berekenen cumulatieve frequentie TSH
-p <-ggplot(TSHFilter, aes(x = TSH))
-p + stat_ecdf() + geom_line()
+TSHecdf <-ggplot(TSHFilter, aes(x = TSH))
+TSHecdf + stat_ecdf()
 
 #Berekenen cumulatieve frequentie FT4
-l <-ggplot(TSHFilter, aes(x = FT4))
-l + stat_ecdf()
+FT4ecdf <-ggplot(TSHFilter, aes(x = FT4))
+FT4ecdf + stat_ecdf()
 
 #Berekenen cumulatieve frequentie FT3
-u <-ggplot(TSHFilter, aes(x = FT3))
-u + stat_ecdf()
+FT3ecdf <-ggplot(TSHFilter, aes(x = FT3))
+FT3ecdf + stat_ecdf()
 
 #Verander NA naar 0
 TSHFilter$TSH[is.na(TSHFilter$TSH)] <- 0
@@ -106,29 +106,51 @@ TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 5 & FT3 >= 3.5 | FT3 == 0.00, TSH 
 #Verander 0 terug naar NA
 TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
 
-#Boxplot FT3 na lineaire filter
-m <- ggplot(TSHFilterCUMFreq, aes(y = FT3))
-m + geom_boxplot()
+#Boxplot FT3 na visueel bepalem lineaire deel
+FT3LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT3))
+FT3LinFil + geom_boxplot()
 
-#Boxplot TSH na lineaire filter
-n <- ggplot(TSHFilterCUMFreq, aes(y = TSH))
-n + geom_boxplot()
+#Boxplot TSH na visueel bepalem lineaire deel
+TSHLinFil <- ggplot(TSHFilterCUMFreq, aes(y = TSH))
+TSHLinFil + geom_boxplot()
 
-#Boxplot FT4 na lineaire filter
-b <- ggplot(TSHFilterCUMFreq, aes(y = FT4))
-b + geom_boxplot()
+#Boxplot FT4 na visueel bepalem lineaire deel
+FT4LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT4))
+FT4LinFil + geom_boxplot()
 
-tab <- table(TSHFilterCUMFreq$TSH, exclude = NULL)
-csum <- cumsum((tab/ 7538)*100)
-csum
+#Cumulatieve frequentietabel van lineaire deel TSH
+TSHtab <- table(TSHFilterCUMFreq$TSH, exclude = NULL)
+TSHcsum <- cumsum((TSHtab/ 7538)*100)
+TSHcsum
 
-csumdata <- data.frame(as.matrix(csum))
-setDT(csumdata, keep.rownames = TRUE)
+#TSH frequentietabel omzetten in dataframe
+TSHcsumdata <- data.frame(as.matrix(TSHcsum))
+setDT(TSHcsumdata, keep.rownames = TRUE)
 
-j <- ggplot(csum)
-j + geom_dotplot()
+#TSH regressielijn
+plot(TSHcsumdata)
 
-plot(csumdata)
-view(csum)
+#Cumulatieve frequentietabel van lineaire deel FT4
+FT4tab <- table(TSHFilterCUMFreq$FT4, exclude = NULL)
+FT4csum <- cumsum((FT4tab/ 7538)*100)
+FT4csum
 
-remove(TSHFilterCUMFreq)
+#FT4 frequentietabel omzetten in dataframe
+FT4csumdata <- data.frame(as.matrix(FT4csum))
+setDT(FT4csumdata, keep.rownames = TRUE)
+
+#FT4 regressielijn
+plot(FT4csumdata, na.rm = TRUE)
+
+#Cumulatieve frequentietabel van lineaire deel FT3
+FT3tab <- table(TSHFilterCUMFreq$FT3, exclude = NULL)
+FT3csum <- cumsum((FT3tab/ 7538)*100)
+FT3csum
+
+#FT3 frequentietabel omzetten in dataframe
+FT3csumdata <- data.frame(as.matrix(FT3csum))
+setDT(FT3csumdata, keep.rownames = TRUE)
+
+#FT3 regressielijn
+plot(FT3csumdata)
+
