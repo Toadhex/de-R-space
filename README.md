@@ -84,7 +84,7 @@ FT3_2 + geom_boxplot()
 
 #Berekenen cumulatieve frequentie TSH
 p <-ggplot(TSHFilter, aes(x = TSH))
-p + stat_ecdf()
+p + stat_ecdf() + geom_line()
 
 #Berekenen cumulatieve frequentie FT4
 l <-ggplot(TSHFilter, aes(x = FT4))
@@ -100,7 +100,7 @@ TSHFilter$FT4[is.na(TSHFilter$FT4)] <- 0
 TSHFilter$FT3[is.na(TSHFilter$FT3)] <- 0
 
 #TSH waarden buiten het visuele lineaire gebied filtered
-TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 5 & FT3 >= 4 | FT3 == 0.00, TSH <= 2.2 & TSH >= 1 | TSH == 0.00, FT4 <= 18 & FT4 >= 13.5 | FT4 == 0.00)
+TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 5 & FT3 >= 3.5 | FT3 == 0.00, TSH <= 2.3 & TSH >= 1 | TSH == 0.00, FT4 <= 18 & FT4 >= 13.5 | FT4 == 0.00)
 
 #Verander 0 terug naar NA
 TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
@@ -116,6 +116,13 @@ n + geom_boxplot()
 #Boxplot FT4 na lineaire filter
 b <- ggplot(TSHFilterCUMFreq, aes(y = FT4))
 b + geom_boxplot()
+
+tab <- table(TSHFilterCUMFreq$TSH, exclude = NULL)
+csum <- cumsum(tab)
+TSHFilterCUMFreq <- csum
+
+View(csum)
+csum$TSHCRF <- (csum[, 0]/ 7538)
 
 
 remove(TSHFilterCUMFreq)
