@@ -128,33 +128,31 @@ TSHcsum
 TSHcsumdata <- data.frame(as.matrix(TSHcsum))
 setDT(TSHcsumdata, keep.rownames = TRUE)
 
-#TSH regressielijn
-plot(TSHcsumdata)
-
+#TSH regressielijn plotten
 TSHcsumdata$rn <- as.numeric(as.character(TSHcsumdata$rn))
 
-TSHRegLijn <- ggplot(TSHcsumdata, aes(x = TSHcsum, y = rn)) + geom_point(shape=1) + geom_smooth(method = "lm", se=FALSE, color="black", formula = y ~ x)
+TSHRegLijn <- ggplot(TSHcsumdata, aes(y = TSHcsum, x = rn)) + geom_point(shape=1) + geom_smooth(method = "lm", se=FALSE, color="black", formula = y ~ x)
 TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "TSH waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie (%)")
-TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn") +  annotate("rect", xmin = 0.00, xmax = 0.1, ymin = -0.056, ymax = -0.044, fill="white", colour="red") + annotate("text", x = 0.05, y = -0.05, label = equation(fit), parse = TRUE)
+TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn") + stat_poly_eq(formula = my.formula, aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), parse = TRUE)
 TSHRegLijn 
-
-
-TSHRegLijn
-
-fit <- lm(formula = rn ~ as.matrix.TSHcsum., data = TSHcsumdata)
-coefficients(fit)
-
-
-
 
 #Cumulatieve frequentietabel van lineaire deel FT4
 FT4tab <- table(TSHFilterCUMFreq$FT4, exclude = NULL)
 FT4csum <- cumsum((FT4tab/ 7538)*100)
 FT4csum
+view(FT4csum)
 
 #FT4 frequentietabel omzetten in dataframe
 FT4csumdata <- data.frame(as.matrix(FT4csum))
 setDT(FT4csumdata, keep.rownames = TRUE)
+
+#FT4regressielijn plotten
+FT4csumdata$rn <- as.numeric(as.character(FT4csumdata$rn))
+
+FT4RegLijn <- ggplot(FT4csumdata, aes(y = FT4csum, x = rn)) + geom_point(shape=1) + geom_smooth(method = "lm", se=FALSE, color="black", formula = y ~ x)
+FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "FT4 waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie (%)")
+FT4RegLijn <- FT4RegLijn + ggtitle("FT4 Regressielijn") + stat_poly_eq(formula = my.formula, aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), parse = TRUE)
+FT4RegLijn
 
 #FT4 regressielijn
 plot(FT4csumdata, na.rm = TRUE)
