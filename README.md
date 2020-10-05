@@ -124,6 +124,19 @@ TSHtab <- table(TSHFilterCUMFreq$TSH, exclude = NULL)
 TSHcsum <- cumsum((TSHtab/ 7538))
 TSHcsum
 
+#Aanmaken ggplotRegressiefunctie
+ggplotRegression <- function(fit){
+  
+  require(ggplot2)
+  
+  ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1])) + 
+    geom_point() +
+    stat_smooth(method = "lm", col = "red") +
+    labs(subtitle = paste("R2 = ",signif(summary(fit)$adj.r.squared, 5),
+                          "Intercept =",signif(fit$coef[[1]],5 ),
+                          " Slope =",signif(fit$coef[[2]], 5)))
+}
+
 #TSH frequentietabel omzetten in dataframe
 TSHcsumdata <- data.frame(as.matrix(TSHcsum))
 setDT(TSHcsumdata, keep.rownames = TRUE)
@@ -131,9 +144,9 @@ setDT(TSHcsumdata, keep.rownames = TRUE)
 #TSH regressielijn plotten
 TSHcsumdata$rn <- as.numeric(as.character(TSHcsumdata$rn))
 
-TSHRegLijn <- ggplot(TSHcsumdata, aes(y = TSHcsum, x = rn)) + geom_point(shape=1) + geom_smooth(method = "lm", se=FALSE, color="black", formula = y ~ x)
-TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "TSH waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie")
-TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn")
+TSHRegLijn <- ggplotRegression(lm(rn ~ as.matrix.TSHcsum., data = TSHcsumdata))
+TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "TSH waarde (mU/L)")
+TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn") 
 TSHRegLijn 
 
 #Dataset met alleen FT4 aanmaken
@@ -155,10 +168,10 @@ setDT(FT4csumdata, keep.rownames = TRUE)
 #FT4regressielijn plotten
 FT4csumdata$rn <- as.numeric(as.character(FT4csumdata$rn))
 
-FT4RegLijn <- ggplot(FT4csumdata, aes(y = FT4csum, x = rn)) + geom_point(shape=1) + geom_smooth(method = "lm", se=FALSE, color="black", formula = y ~ x)
-FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "FT4 waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie")
+FT4RegLijn <- ggplotRegression(lm(rn ~ as.matrix.FT4csum., data = FT4csumdata))
+FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT4 waarde (mU/L)")
 FT4RegLijn <- FT4RegLijn + ggtitle("FT4 Regressielijn") 
-FT4RegLijn
+FT4RegLijn 
 
 #Dataset met alleen FT3 aanmaken
 FT3waardes <- TSHFilterCUMFreq$FT3
@@ -184,18 +197,5 @@ FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") +
 FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn") 
 FT3RegLijn 
 
-ggplotRegression <- function(fit){
-  
-  require(ggplot2)
-  
-  ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1])) + 
-    geom_point() +
-    stat_smooth(method = "lm", col = "red") +
-    labs(title = paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
-                       "Intercept =",signif(fit$coef[[1]],5 ),
-                       " Slope =",signif(fit$coef[[2]], 5),
-                       " P =",signif(summary(fit)$coef[2,4], 5)))
-}
 
-FT3RegLijn <-ggplotRegression(lm(rn ~ as.matrix.FT3csum., data = FT3csumdata))
 
