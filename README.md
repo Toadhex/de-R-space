@@ -108,8 +108,9 @@ TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 4.8 & FT3 >= 4 | FT3 == 0.00, TSH 
 TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
 
 #Boxplot FT3 na visueel bepalem lineaire deel
-FT3LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT3))
-FT3LinFil + geom_boxplot()
+FT3LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT3)) + scale_fill_hue(l=40, c=35)
+FT3LinFil + geom_boxplot() 
+
 
 #Boxplot TSH na visueel bepalem lineaire deel
 TSHLinFil <- ggplot(TSHFilterCUMFreq, aes(y = TSH))
@@ -146,7 +147,7 @@ TSHcsumdata$rn <- as.numeric(as.character(TSHcsumdata$rn))
 
 TSHRegLijn <- ggplotRegression(lm(rn ~ as.matrix.TSHcsum., data = TSHcsumdata))
 TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "TSH waarde (mU/L)")
-TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn") 
+TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn") + theme_bw() + geom_point(color='green')
 TSHRegLijn 
 
 #Dataset met alleen FT4 aanmaken
@@ -198,20 +199,62 @@ FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn")
 FT3RegLijn 
 
 #Reference Interval Minimum TSH 
-(1.2695*0.025) + 1.003
+TSHRImin <- (1.2695*0.025) + 1.003
+TSHRImin
 
 #Reference Interval Maximum TSH 
-(1.2695*0.975) + 1.003
+TSHRImax <- (1.2695*0.975) + 1.003
+TSHRImax
 
 #Reference Interval Minimum FT4 
-(4.2295*0.025) + 13.714
+FT4RImin <- (4.2295*0.025) + 13.714
+FT4RImin
 
 #Reference Interval Maximum FT4 
-(4.2295*0.975) + 13.714
+FT4RImax <- (4.2295*0.975) + 13.714
+FT4RImax
 
 #Reference Interval Minimum FT3 
-(0.77639*0.025) + 4.0912
+FT3RImin <- (0.77639*0.025) + 4.0912
+FT3RImin 
 
 #Reference Interval Maximum FT3 
-(0.77639*0.975) + 4.0912
+FT3RImax <- (0.77639*0.975) + 4.0912
+FT3RImax
+
+#RCV perccntage TSH
+TSHRCV <- ((2^0.5)*(1.96)*(((0.15^2)+(0.193^2))^0.5))*100
+TSHRCV
+
+#RCV perccntage FT4
+FT4RCV <- ((2^0.5)*(1.96)*(((0.16^2)+(0.057^2))^0.5))*100
+FT4RCV
+
+#RCV perccntage FT3
+FT3RCV <- ((2^0.5)*(1.96)*(((0.24^2)+(0.079^2))^0.5))*100
+FT3RCV
+
+#TSHmin afwijking met literatuur
+TSHminafw <- ((0.3/ TSHRImin)*100)
+TSHminafw
+
+#TSHmax afwijking met literatuur
+TSHmaxafw <- ((TSHRImax/ 4)*100)
+TSHmaxafw
+
+#FT4min afwijking met literatuur
+FT4minafw <- ((10/ FT4RImin)*100)
+FT4minafw
+
+#FT4max afwijking met literatuur
+FT4maxafw <- ((FT4RImax/ 24)*100)
+FT4maxafw
+
+#FT3min afwijking met literatuur
+FT3minafw <- ((3.5/ FT3RImin)*100)
+FT3minafw
+
+#FT3max afwijking met literatuur
+FT3maxafw <- ((FT3RImax/ 6.5)*100)
+FT3maxafw
 
