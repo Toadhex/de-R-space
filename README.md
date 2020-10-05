@@ -102,7 +102,7 @@ TSHFilter$FT4[is.na(TSHFilter$FT4)] <- 0
 TSHFilter$FT3[is.na(TSHFilter$FT3)] <- 0
 
 #TSH waarden buiten het visuele lineaire gebied filtered
-TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 5 & FT3 >= 3.5 | FT3 == 0.00, TSH <= 2.3 & TSH >= 1 | TSH == 0.00, FT4 <= 18 & FT4 >= 13.5 | FT4 == 0.00)
+TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 4.8 & FT3 >= 4 | FT3 == 0.00, TSH <= 2.3 & TSH >= 1 | TSH == 0.00, FT4 <= 18 & FT4 >= 13.5 | FT4 == 0.00)
 
 #Verander 0 terug naar NA
 TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
@@ -132,8 +132,8 @@ setDT(TSHcsumdata, keep.rownames = TRUE)
 TSHcsumdata$rn <- as.numeric(as.character(TSHcsumdata$rn))
 
 TSHRegLijn <- ggplot(TSHcsumdata, aes(y = TSHcsum, x = rn)) + geom_point(shape=1) + geom_smooth(method = "lm", se=FALSE, color="black", formula = y ~ x)
-TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "TSH waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie (%)")
-TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn") + stat_poly_eq(formula = my.formula, aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), parse = TRUE)
+TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "TSH waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie")
+TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn")
 TSHRegLijn 
 
 #Dataset met alleen FT4 aanmaken
@@ -156,7 +156,7 @@ setDT(FT4csumdata, keep.rownames = TRUE)
 FT4csumdata$rn <- as.numeric(as.character(FT4csumdata$rn))
 
 FT4RegLijn <- ggplot(FT4csumdata, aes(y = FT4csum, x = rn)) + geom_point(shape=1) + geom_smooth(method = "lm", se=FALSE, color="black", formula = y ~ x)
-FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "FT4 waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie (%)")
+FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "FT4 waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie")
 FT4RegLijn <- FT4RegLijn + ggtitle("FT4 Regressielijn") 
 FT4RegLijn
 
@@ -167,7 +167,7 @@ view(FT3waardes)
 
 #Cumulatieve frequentietabel van lineaire deel FT3
 FT3tab <- table(FT3waardes)
-FT3csum <- cumsum((FT3tab/ 195))
+FT3csum <- cumsum((FT3tab/ 137))
 FT3csum
 view(FT3csumdata)
 view(FT3tab)
@@ -180,9 +180,10 @@ setDT(FT3csumdata, keep.rownames = TRUE)
 FT3csumdata$rn <- as.numeric(as.character(FT3csumdata$rn))
 
 FT3RegLijn <- ggplot(FT3csumdata, aes(y = FT3csum, x = rn)) + geom_point(shape=1) + geom_smooth(method = "lm", se=FALSE, color="black", formula = y ~ x)
-FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "FT3 waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie (%)")
+FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "FT3 waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie")
 FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn") 
 FT3RegLijn
 
+lm(formula = rn ~ FT3csum, data = FT3csumdata)
 
 
