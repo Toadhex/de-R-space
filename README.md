@@ -179,10 +179,10 @@ setDT(FT3csumdata, keep.rownames = TRUE)
 #FT3regressielijn plotten
 FT3csumdata$rn <- as.numeric(as.character(FT3csumdata$rn))
 
-FT3RegLijn <- ggplot(FT3csumdata, aes(y = FT3csum, x = rn)) + geom_point(shape=1) + geom_smooth(method = "lm", se=FALSE, color="black", formula = y ~ x)
-FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "FT3 waarde (mU/L)") + scale_y_continuous(name = "Cumelatieve frequentie")
+FT3RegLijn <-ggplotRegression(lm(rn ~ as.matrix.FT3csum., data = FT3csumdata))
+FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT3 waarde (mU/L)")
 FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn") 
-FT3RegLijn
+FT3RegLijn 
 
 ggplotRegression <- function(fit){
   
@@ -197,5 +197,5 @@ ggplotRegression <- function(fit){
                        " P =",signif(summary(fit)$coef[2,4], 5)))
 }
 
-ggplotRegression(lm(rn ~ as.matrix.FT3csum., data = FT3csumdata))
+FT3RegLijn <-ggplotRegression(lm(rn ~ as.matrix.FT3csum., data = FT3csumdata))
 
