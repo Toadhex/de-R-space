@@ -133,8 +133,8 @@ ggplotRegression <- function(fit){
     geom_point() +
     stat_smooth(method = "lm", col = "red") +
     labs(subtitle = paste("R2 = ",signif(summary(fit)$adj.r.squared, 5),
-                          "Intercept =",signif(fit$coef[[1]],5 ),
-                          " Slope =",signif(fit$coef[[2]], 5)))
+                          "       Intercept =",signif(fit$coef[[1]],5 ),
+                          "       Slope =",signif(fit$coef[[2]], 5)))
 }
 
 #TSH frequentietabel omzetten in dataframe
@@ -197,5 +197,21 @@ FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") +
 FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn") 
 FT3RegLijn 
 
+#Reference Interval Minimum TSH 
+(1.2695*0.025) + 1.003
 
+#Reference Interval Maximum TSH 
+(1.2695*0.975) + 1.003
+
+#Reference Interval Minimum FT4 
+(4.2295*0.025) + 13.714
+
+#Reference Interval Maximum FT4 
+(4.2295*0.975) + 13.714
+
+#Reference Interval Minimum FT3 
+(0.77639*0.025) + 4.0912
+
+#Reference Interval Maximum FT3 
+(0.77639*0.975) + 4.0912
 
