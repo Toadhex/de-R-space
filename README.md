@@ -124,9 +124,6 @@ TSHtab <- table(TSHFilterCUMFreq$TSH, exclude = NULL)
 TSHcsum <- cumsum((TSHtab/ 7538)*100)
 TSHcsum
 
-
-count(TSHFilterCUMFreq, FT4)
-
 #TSH frequentietabel omzetten in dataframe
 TSHcsumdata <- data.frame(as.matrix(TSHcsum))
 setDT(TSHcsumdata, keep.rownames = TRUE)
@@ -174,11 +171,6 @@ FT3csum <- cumsum((FT3tab/ 195)*100)
 FT3csum
 view(FT3csumdata)
 view(FT3tab)
-
-#Cumulatieve frequentietabel van lineaire deel FT3
-FT3tab <- table(TSHFilterCUMFreq$FT3, exclude = NULL)
-FT3csum <- cumsum((FT3tab/ 7538)*100)
-FT3csum
 
 #FT3 frequentietabel omzetten in dataframe
 FT3csumdata <- data.frame(as.matrix(FT3csum))
