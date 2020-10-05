@@ -121,7 +121,7 @@ FT4LinFil + geom_boxplot()
 
 #Cumulatieve frequentietabel van lineaire deel TSH
 TSHtab <- table(TSHFilterCUMFreq$TSH, exclude = NULL)
-TSHcsum <- cumsum((TSHtab/ 7538)*100)
+TSHcsum <- cumsum((TSHtab/ 7538))
 TSHcsum
 
 #TSH frequentietabel omzetten in dataframe
@@ -143,7 +143,7 @@ FT4waardes <- na.omit(FT4waardes)
 
 #Cumulatieve frequentietabel van lineaire deel FT4
 FT4tab <- table(FT4waardes)
-FT4csum <- cumsum((FT4tab/ 5565)*100)
+FT4csum <- cumsum((FT4tab/ 5565))
 FT4csum
 view(FT4csum)
 view(FT4tab)
@@ -167,7 +167,7 @@ view(FT3waardes)
 
 #Cumulatieve frequentietabel van lineaire deel FT3
 FT3tab <- table(FT3waardes)
-FT3csum <- cumsum((FT3tab/ 195)*100)
+FT3csum <- cumsum((FT3tab/ 195))
 FT3csum
 view(FT3csumdata)
 view(FT3tab)
