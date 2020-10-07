@@ -120,11 +120,6 @@ TSHLinFil + geom_boxplot()
 FT4LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT4))
 FT4LinFil + geom_boxplot()
 
-#Cumulatieve frequentietabel van lineaire deel TSH
-TSHtab <- table(TSHFilterCUMFreq$TSH, exclude = NULL)
-TSHcsum <- cumsum((TSHtab/ 7538))
-TSHcsum
-
 #Aanmaken ggplotRegressiefunctie
 ggplotRegression <- function(fit){
   
@@ -138,6 +133,11 @@ ggplotRegression <- function(fit){
                           "       Slope =",signif(fit$coef[[2]], 5)))
 }
 
+#Cumulatieve frequentietabel van lineaire deel TSH
+TSHtab <- table(TSHFilterCUMFreq$TSH, exclude = NULL)
+TSHcsum <- cumsum((TSHtab/ 7480))
+TSHcsum
+
 #TSH frequentietabel omzetten in dataframe
 TSHcsumdata <- data.frame(as.matrix(TSHcsum))
 setDT(TSHcsumdata, keep.rownames = TRUE)
@@ -147,7 +147,7 @@ TSHcsumdata$rn <- as.numeric(as.character(TSHcsumdata$rn))
 
 TSHRegLijn <- ggplotRegression(lm(rn ~ as.matrix.TSHcsum., data = TSHcsumdata))
 TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "TSH waarde (mU/L)")
-TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn") + theme_bw() + geom_point(color='green')
+TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn")
 TSHRegLijn 
 
 #Dataset met alleen FT4 aanmaken
