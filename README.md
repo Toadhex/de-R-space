@@ -42,15 +42,15 @@ sd(TSH$FT3, na.rm = TRUE)
 
 #Boxplot TSH
 TSH_1 <-ggplot(TSH, aes(y = TSH))
-TSH_1 + geom_boxplot()
+TSH_1 + geom_boxplot() + scale_y_continuous(name = "TSH waarde (mU/L)") + ggtitle("Boxplot TSH")
 
 #Boxplot FT4
 FT4_1 <-ggplot(TSH, aes(y = FT4))
-FT4_1 + geom_boxplot() 
+FT4_1 + geom_boxplot() + scale_y_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Boxplot FT4")
 
 #Boxplot FT3
 FT3_1 <-ggplot(data = TSH, aes(y = FT3))
-FT3_1 + geom_boxplot()
+FT3_1 + geom_boxplot() + scale_y_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Boxplot FT3")
 
 #Criteria van Chauvenette toepassen op TSH, berekende waarden toegevoegd in een nieuwe kolom genaam 'TSHC'
 TSH$TSHC <- (TSH[,5]-2.301)/2.813338
@@ -74,27 +74,27 @@ TSHFilter <- na_if(TSHFilter, 0)
 
 #Boxplot TSH na filter
 TSH_2 <-ggplot(TSHFilter, aes(y = TSH))
-TSH_2 + geom_boxplot()
+TSH_2 + geom_boxplot() + scale_y_continuous(name = "TSH waarde (mU/L)") + ggtitle("Boxplot TSH na Criterium van Chauvanet")
 
 #Boxplot FT4 na filter
 FT4_2 <-ggplot(TSHFilter, aes(y = FT4))
-FT4_2 + geom_boxplot()
+FT4_2 + geom_boxplot() + scale_y_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Boxplot FT4 na Criterium van Chauvanet")
 
 #Boxplot FT3 na filter
 FT3_2 <-ggplot(TSHFilter, aes(y = FT3))
-FT3_2 + geom_boxplot()
+FT3_2 + geom_boxplot() + scale_y_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Boxplot FT3 na Criterium van Chauvanet")
 
 #Berekenen cumulatieve frequentie TSH
 TSHecdf <-ggplot(TSHFilter, aes(x = TSH))
-TSHecdf + stat_ecdf()
+TSHecdf + stat_ecdf() + scale_y_continuous(name = "Cumelatieve frequentie") + scale_x_continuous(name = "TSH waarde (mU/L)") + ggtitle("Cumelatieve frequentie TSH")
 
 #Berekenen cumulatieve frequentie FT4
 FT4ecdf <-ggplot(TSHFilter, aes(x = FT4))
-FT4ecdf + stat_ecdf()
+FT4ecdf + stat_ecdf() + scale_y_continuous(name = "Cumelatieve frequentie") + scale_x_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Cumelatieve frequentie FT4")
 
 #Berekenen cumulatieve frequentie FT3
 FT3ecdf <-ggplot(TSHFilter, aes(x = FT3))
-FT3ecdf + stat_ecdf()
+FT3ecdf + stat_ecdf() + scale_y_continuous(name = "Cumelatieve frequentie") + scale_x_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Cumelatieve frequentie FT3")
 
 #Verander NA naar 0
 TSHFilter$TSH[is.na(TSHFilter$TSH)] <- 0
@@ -107,18 +107,17 @@ TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 4.8 & FT3 >= 4 | FT3 == 0.00, TSH 
 #Verander 0 terug naar NA
 TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
 
-#Boxplot FT3 na visueel bepalem lineaire deel
-FT3LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT3)) + scale_fill_hue(l=40, c=35)
-FT3LinFil + geom_boxplot() 
-
-
 #Boxplot TSH na visueel bepalem lineaire deel
 TSHLinFil <- ggplot(TSHFilterCUMFreq, aes(y = TSH))
-TSHLinFil + geom_boxplot()
+TSHLinFil + geom_boxplot() + scale_y_continuous(name = "TSH waarde (mU/L)") + ggtitle("Boxplot TSH na Cumulatieve frequentieanalyse")
 
 #Boxplot FT4 na visueel bepalem lineaire deel
 FT4LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT4))
-FT4LinFil + geom_boxplot()
+FT4LinFil + geom_boxplot() + scale_y_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Boxplot FT4 na Cumulatieve frequentieanalyse")
+
+#Boxplot FT3 na visueel bepalem lineaire deel
+FT3LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT3)) + scale_fill_hue(l=40, c=35)
+FT3LinFil + geom_boxplot() + scale_y_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Boxplot FT3 na Cumulatieve frequentieanalyse")
 
 #Aanmaken ggplotRegressiefunctie
 ggplotRegression <- function(fit){
@@ -170,7 +169,7 @@ setDT(FT4csumdata, keep.rownames = TRUE)
 FT4csumdata$rn <- as.numeric(as.character(FT4csumdata$rn))
 
 FT4RegLijn <- ggplotRegression(lm(rn ~ as.matrix.FT4csum., data = FT4csumdata))
-FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT4 waarde (mU/L)")
+FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT4 waarde (pmol/L)")
 FT4RegLijn <- FT4RegLijn + ggtitle("FT4 Regressielijn") 
 FT4RegLijn 
 
@@ -194,7 +193,7 @@ setDT(FT3csumdata, keep.rownames = TRUE)
 FT3csumdata$rn <- as.numeric(as.character(FT3csumdata$rn))
 
 FT3RegLijn <-ggplotRegression(lm(rn ~ as.matrix.FT3csum., data = FT3csumdata))
-FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT3 waarde (mU/L)")
+FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT3 waarde (pmol/L)")
 FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn") 
 FT3RegLijn 
 
