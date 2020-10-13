@@ -6,6 +6,9 @@ library(tidyr)
 library(ggplot2)
 library(data.table)
 library(ggpmisc)
+library(rmarkdown)
+library(backports)
+library(referenceIntervals)
 
 #Importeren Excel bestand
 TSH <- library(readxl)
@@ -256,4 +259,45 @@ FT3minafw
 #FT3max afwijking met literatuur
 FT3maxafw <- ((FT3RImax/ 6.5)*100)
 FT3maxafw
+
+#bepalen referentieintervallen TSH middels Cookmethode
+cookTSH <- cook.outliers(TSH$TSH)
+cookTSHmax <-max(sapply(cookTSH$subset, max))
+cookTSHmax
+cookTSHmin <- min(sapply(cookTSH$subset, min))
+cookTSHmin
+#bepalen referentieintervallen FT3 middels Cookmethode
+cookFT3 <- cook.outliers(TSH$FT3)
+cookFT3max <- max(sapply(cookFT3$subset, max))
+cookFT3max
+cookFT3min <- min(sapply(cookFT3$subset, min))
+cookFT3min
+
+#bepalen referentieintervallen FT4 middels Cookmethode
+cookFT4 <- cook.outliers(TSH$FT4)
+cookFT4max <- max(sapply(cookFT4$subset, max))
+cookFT4max
+cookFT4min <- min(sapply(cookFT4$subset, min))
+cookFT4min
+
+#bepalen referentieintervallen TSH middels Hornmethode
+hornTSH <- horn.outliers(TSH$TSH)
+hornTSHmax <- max(sapply(hornTSH$subset, max))
+hornTSHmax
+hornTSHmin <- min(sapply(hornTSH$subset, min))
+hornTSHmin
+
+#bepalen referentieintervallen FT3 middels Hornmethode
+hornFT3 <- horn.outliers(TSH$FT3)
+hornFT3max <- max(sapply(hornFT3$subset, max, na.rm = TRUE))
+hornFT3max
+hornFT3min <- min(sapply(hornFT3$subset, min, na.rm = TRUE))
+hornFT3min
+
+#bepalen referentieintervallen FT4 middels Hornmethode
+hornFT4 <- horn.outliers(TSH$FT4)
+hornFT4max <-max(sapply(hornFT4$subset, max, na.rm = TRUE))
+hornFT4max
+hornFT4min <- min(sapply(hornFT4$subset, min, na.rm = TRUE))
+hornFT4min
 
