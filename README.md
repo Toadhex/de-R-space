@@ -9,6 +9,8 @@ library(ggpmisc)
 library(rmarkdown)
 library(backports)
 library(referenceIntervals)
+library(ggpubr)
+library(nortest)
 
 #Importeren Excel bestand
 TSH <- library(readxl)
@@ -18,6 +20,42 @@ curl::curl_download(url, destfile)
 TSH <- read_excel(destfile, col_types = c("text", 
                                           "text", "text", "text", "numeric", "numeric", 
                                           "numeric", "skip"))
+
+#bepalen of TSH normaal verdeeld middels Anderson-Darling test
+
+p <- (ad.test(TSH$TSH)[["p.value"]])
+
+View(p)
+
+if(p > 0.025){
+  print("data is normaal verdeeld")
+} else {
+  print("data is niet normaal verdeeld")
+}
+
+#bepalen of FT4 normaal verdeeld middels Anderson-Darling test
+
+p <- (ad.test(TSH$FT4)[["p.value"]])
+
+View(p)
+
+if(p > 0.025){
+  print("data is normaal verdeeld")
+} else {
+  print("data is niet normaal verdeeld")
+}
+
+#bepalen of FT3 normaal verdeeld middels Anderson-Darling test
+
+p <- (ad.test(TSH$FT3)[["p.value"]])
+
+View(p)
+
+if(p > 0.025){
+  print("data is normaal verdeeld")
+} else {
+  print("data is niet normaal verdeeld")
+}
 
 #Datatabel weergeven in nieuwe tab
 View(TSH)
