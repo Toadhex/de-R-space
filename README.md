@@ -21,41 +21,22 @@ TSH <- read_excel(destfile, col_types = c("text",
                                           "text", "text", "text", "numeric", "numeric", 
                                           "numeric", "skip"))
 
-#bepalen of TSH normaal verdeeld middels Anderson-Darling test
+#Controleren of TSH normaal is verdeeld m.b.v. qqplot en histogram
+qqnorm(TSH$TSH, pch = 1, frame = FALSE)
+qqline(TSH$TSH, col = "steelblue", lwd = 2)
 
-p <- (ad.test(TSH$TSH)[["p.value"]])
+hist(TSH$TSH)
 
-View(p)
+#Controleren of FT4 normaal is verdeeld m.b.v. qqplot en histogram
+qqnorm(TSH$FT4, pch = 1, frame = FALSE)
+qqline(TSH$FT4, col = "steelblue", lwd = 2)
 
-if(p > 0.025){
-  print("data is normaal verdeeld")
-} else {
-  print("data is niet normaal verdeeld")
-}
+hist(TSH$FT4)
 
-#bepalen of FT4 normaal verdeeld middels Anderson-Darling test
-
-p <- (ad.test(TSH$FT4)[["p.value"]])
-
-View(p)
-
-if(p > 0.025){
-  print("data is normaal verdeeld")
-} else {
-  print("data is niet normaal verdeeld")
-}
-
-#bepalen of FT3 normaal verdeeld middels Anderson-Darling test
-
-p <- (ad.test(TSH$FT3)[["p.value"]])
-
-View(p)
-
-if(p > 0.025){
-  print("data is normaal verdeeld")
-} else {
-  print("data is niet normaal verdeeld")
-}
+#Controleren of FT3 normaal is verdeeld m.b.v. qqplot en histogram
+qqnorm(TSH$FT3, pch = 1, frame = FALSE)
+qqline(TSH$FT3, col = "steelblue", lwd = 2)
+hist(TSH$FT3)
 
 #Datatabel weergeven in nieuwe tab
 View(TSH)
