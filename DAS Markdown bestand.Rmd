@@ -1,14 +1,15 @@
 ---
-title: "DAS Referentie intervallen bepalen middels de Hoffman methode"
+title: "Referentie-intervallen schatten voor TSH, FT4 en FT3 middels de Hoffman methode"
 author: "Bryan van Nimmwegen, Tony Cao"
-date: "13-10-2020"
+date: "28-10-2020"
 output:
+  word_document: default
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
-DAS Referentie intervallen bepalen middels de Hoffman methode
+Hier worden de benodigden R-Studio packages geladen die zijn gebruikt tijdens dit onderzoek.
  
  ```{r}
  
@@ -25,7 +26,10 @@ library(backports)
 library(referenceIntervals)
 library(ggpubr)
 library(nortest)
+```
+Op deze manier wordt de gebruikte dataset automatisch geïmporteerd uit GitHub.
 
+ ```{r}
 #Importeren Excel bestand
 TSH <- library(readxl)
 url <- "https://github.com/Toadhex/de-R-space/raw/master/TSH.xlsx"
@@ -36,51 +40,27 @@ TSH <- read_excel(destfile, col_types = c("text",
                                           "numeric", "skip"))
 
  ```
+ Met de functie 'qqnorm' wordt de data van (TSH, FT4 of FT3) uitgezet tegen een normaalverdeling. De functie 'qqline' voegt een lijn toe die door het eerste en derde kwartiel loopt. Met de functie 'hist' is een histogram geplot.  
  
  ```{r}
-#bepalen of TSH normaal verdeeld middels Anderson-Darling test
-p <- (ad.test(TSH$TSH)[["p.value"]])
+#Controleren of TSH normaal is verdeeld m.b.v. qqplot en histogram
+qqnorm(TSH$TSH, pch = 1, frame = FALSE)
+qqline(TSH$TSH, col = "steelblue", lwd = 2)
+hist(TSH$TSH)
 
-View(p)
+#Controleren of FT4 normaal is verdeeld m.b.v. qqplot en histogram
+qqnorm(TSH$FT4, pch = 1, frame = FALSE)
+qqline(TSH$FT4, col = "steelblue", lwd = 2)
+hist(TSH$FT4)
 
-if(p > 0.025){
-  print("data is normaal verdeeld")
-} else {
-  print("data is niet normaal verdeeld")
-}
-
-#bepalen of FT4 normaal verdeeld middels Anderson-Darling test
-
-p <- (ad.test(TSH$FT4)[["p.value"]])
-
-View(p)
-
-if(p > 0.025){
-  print("data is normaal verdeeld")
-} else {
-  print("data is niet normaal verdeeld")
-}
-
-#bepalen of FT3 normaal verdeeld middels Anderson-Darling test
-
-p <- (ad.test(TSH$FT3)[["p.value"]])
-
-View(p)
-
-if(p > 0.025){
-  print("data is normaal verdeeld")
-} else {
-  print("data is niet normaal verdeeld")
-}
+#Controleren of FT3 normaal is verdeeld m.b.v. qqplot en histogram
+qqnorm(TSH$FT3, pch = 1, frame = FALSE)
+qqline(TSH$FT3, col = "steelblue", lwd = 2)
+hist(TSH$FT3)
  
   ```
-  
+In deze stap zijn statistische waarden van TSH, FT4 en FT3 bepaald. Met de functie 'summary' worden statistische waarden zoals: gemiddelde, mediaan, minimale waarden en maximale waarden bepaald. De functie 'sd' bepaald de standaard deviatie. 
   ```{r}
-#Datatabel weergeven in nieuwe tab
-View(TSH)
-
-#Eerste waarden weergeven in de console
-head(TSH)
 
 #Statistische gegevens van de kolom 'TSH'
 summary(TSH$TSH)
@@ -99,7 +79,10 @@ summary(TSH$FT3)
 
 #Standaard deviatie van de kolom 'FT3'
 sd(TSH$FT3, na.rm = TRUE)
+```
+Hier is een boxplot gemaakt van de ruwedataset om de verandering na elke filterstap visueel te kunnen vergelijken. Functie 'ggplot' creërt een basisplot met de benodigde gegevens, dit basisplot kan worden omgezet naar verschillende plot door andere functies toe te voegen. Functie 'geom_boxplot' maakt een boxplot van de opgegeven data.
 
+ ```{r}
 #Boxplot TSH
 TSH_1 <-ggplot(TSH, aes(y = TSH))
 TSH_1 + geom_boxplot()
@@ -113,7 +96,7 @@ FT3_1 <-ggplot(data = TSH, aes(y = FT3))
 FT3_1 + geom_boxplot()
 
 ```
- 
+In deze stap is het Criterium van Chauvenette toegepast met behulp van de onderstaande formule.
   ```{r}
   
 #Criteria van Chauvenette toepassen op TSH, berekende waarden toegevoegd in een nieuwe kolom genaam 'TSHC'
@@ -124,18 +107,29 @@ TSH$FT4C <- (TSH[,6]-16.46)/3.083652
 
 #Criteria van Chauvenette toepassen op FT3, berekende waarden toegevoegd in een nieuwe kolom genaam 'FT3C'
 TSH$FT3C <- (TSH[,7]-4.668)/1.464226
+```
+Hier zijn met de functie 'is.na' de NA-waarden (missende waarden) omgezet naar 0 om problemen te voorkomen bij de volgende filterstap.  
 
+ ```{r}
 #Verander NA naar 0
 TSH$TSHC[is.na(TSH$TSHC)] <- 0
 TSH$FT4C[is.na(TSH$FT4C)] <- 0
 TSH$FT3C[is.na(TSH$FT3C)] <- 0
+```
+De waarden buiten het kritiekegebied zijn gefilterd met de functie 'filter'.
 
+ ```{r}
 #TSH waarden buiten het kritiekegebied filtered
 TSHFilter <- filter (TSH, TSHC < 3.49, FT4C < 3.49, FT3C < 3.49)
+```
+Na het filteren zijn met de functie 'na_if' de 0-waarden weer teruggezet naar NA-waarden.
 
+ ```{r}
 #Verander 0 terug naar NA
 TSHFilter <- na_if(TSHFilter, 0)
-
+```
+Om visueel de gefilterde data te vergelijken met de ruwe data is er een boxplot gemaakt van de gefilterde data na het toepassen van het criterium van chauvenette. 
+ ```{r}
 #Boxplot TSH na filter
 TSH_2 <-ggplot(TSHFilter, aes(y = TSH))
 TSH_2 + geom_boxplot()
@@ -149,7 +143,7 @@ FT3_2 <-ggplot(TSHFilter, aes(y = FT3))
 FT3_2 + geom_boxplot()
 
  ```
- 
+In deze stap is een cumulatieve frequentie grafiek geplot met de functie 'stat_ecdf'. Vervolgens is visueel het lineaire gebied bepaald. 
   ```{r}
 #Berekenen cumulatieve frequentie TSH
 TSHecdf <-ggplot(TSHFilter, aes(x = TSH))
@@ -162,18 +156,30 @@ FT4ecdf + stat_ecdf()
 #Berekenen cumulatieve frequentie FT3
 FT3ecdf <-ggplot(TSHFilter, aes(x = FT3))
 FT3ecdf + stat_ecdf()
+```
+Hier zijn opnieuw de NA-waarden omgezet naar 0 om problemen te voorkomen bij de volgende filterstap.  
 
+ ```{r}
 #Verander NA naar 0
 TSHFilter$TSH[is.na(TSHFilter$TSH)] <- 0
 TSHFilter$FT4[is.na(TSHFilter$FT4)] <- 0
 TSHFilter$FT3[is.na(TSHFilter$FT3)] <- 0
+```
+De waarden buiten het visueel bepaalde lineairegebied zijn gefilterd met de functie 'filter'.
 
+ ```{r}
 #TSH waarden buiten het visuele lineaire gebied filtered
 TSHFilterCUMFreq <- filter (TSHFilter, FT3 <= 4.8 & FT3 >= 4 | FT3 == 0.00, TSH <= 2.3 & TSH >= 1 | TSH == 0.00, FT4 <= 18 & FT4 >= 13.5 | FT4 == 0.00)
+```
+Na het filteren zijn met de functie 'na_if' de 0-waarden weer teruggezet naar NA-waarden.
 
+ ```{r}
 #Verander 0 terug naar NA
 TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
+```
+Om visueel de de invloed van de bovenstaande filterstap te bekijken is er een boxplot gemaakt van het visueel bepaalde lineairegebied. 
 
+ ```{r}
 #Boxplot FT3 na visueel bepalem lineaire deel
 FT3LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT3)) + scale_fill_hue(l=40, c=35)
 FT3LinFil + geom_boxplot() 
@@ -188,7 +194,7 @@ FT4LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT4))
 FT4LinFil + geom_boxplot()
 
  ```
- 
+ Om een regressielijn te plotten door het visueel bepaalde lineaire gebied is de functie 'ggplotregression' gemaakt met de onderstaande code.
   ```{r}
   
 #Aanmaken ggplotRegressiefunctie
@@ -205,18 +211,24 @@ ggplotRegression <- function(fit){
 }
 
  ```
- 
+ Van het visuele lineaire gebied is een cumulatieve frequentietabel gemaakt met de functie 'cumsum'. Hiervoor is het van belang om eerst een normale tabel te maken met de functie 'table'.
   ```{r}
   
 #Cumulatieve frequentietabel van lineaire deel TSH
 TSHtab <- table(TSHFilterCUMFreq$TSH, exclude = NULL)
 TSHcsum <- cumsum((TSHtab/ 7480))
 TSHcsum
+```
+De cumulatieve frequentietabel is omgezet naar een dataframe. Dit is nodig voor de functie'ggplotregression'.
 
+ ```{r}
 #TSH frequentietabel omzetten in dataframe
 TSHcsumdata <- data.frame(as.matrix(TSHcsum))
 setDT(TSHcsumdata, keep.rownames = TRUE)
+```
+Vervolgens is de regressielijn geplot van het visueel bepaalde deel met de functie 'ggplotregression'.
 
+ ```{r}
 #TSH regressielijn plotten
 TSHcsumdata$rn <- as.numeric(as.character(TSHcsumdata$rn))
 
@@ -226,7 +238,7 @@ TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn")
 TSHRegLijn 
 
  ```
- 
+ In deze stap is op dezelfde manier een regressielijn geplot voor FT4 en FT3.
   ```{r}
 
 #Dataset met alleen FT4 aanmaken
@@ -252,10 +264,6 @@ FT4RegLijn <- ggplotRegression(lm(rn ~ as.matrix.FT4csum., data = FT4csumdata))
 FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT4 waarde (mU/L)")
 FT4RegLijn <- FT4RegLijn + ggtitle("FT4 Regressielijn") 
 FT4RegLijn 
-
- ```
- 
-  ```{r}
   
 #Dataset met alleen FT3 aanmaken
 FT3waardes <- TSHFilterCUMFreq$FT3
@@ -282,7 +290,7 @@ FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn")
 FT3RegLijn 
 
  ```
-
+In deze laatste stap zijn de refrentie-intervallen, RCV-waarden en afwijkingen met de literatuur bepaald.
  ```{r}
 
 #Reference Interval Minimum TSH 
