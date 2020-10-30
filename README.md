@@ -22,21 +22,19 @@ TSH <- read_excel(destfile, col_types = c("text",
                                           "numeric", "skip"))
 
 #Controleren of TSH normaal is verdeeld m.b.v. qqplot en histogram
-qqnorm(TSH$TSH, pch = 1, frame = FALSE)
+qqnorm(TSH$TSH, pch = 1, frame = FALSE, main = "TSH Normal Q-Q Plot")
 qqline(TSH$TSH, col = "steelblue", lwd = 2)
-
-hist(TSH$TSH)
+hist(TSH$TSH, main = "Histogram of TSH", xlab = "TSH")
 
 #Controleren of FT4 normaal is verdeeld m.b.v. qqplot en histogram
-qqnorm(TSH$FT4, pch = 1, frame = FALSE)
+qqnorm(TSH$FT4, pch = 1, frame = FALSE, main = "FT4 Normal Q-Q Plot")
 qqline(TSH$FT4, col = "steelblue", lwd = 2)
-
-hist(TSH$FT4)
+hist(TSH$FT4, main = "Histogram of FT4", xlab = "FT4")
 
 #Controleren of FT3 normaal is verdeeld m.b.v. qqplot en histogram
-qqnorm(TSH$FT3, pch = 1, frame = FALSE)
+qqnorm(TSH$FT3, pch = 1, frame = FALSE, main = "FT3 Normal Q-Q Plot")
 qqline(TSH$FT3, col = "steelblue", lwd = 2)
-hist(TSH$FT3)
+hist(TSH$FT3, main = "Histogram of FT3", xlab = "FT3")
 
 #Datatabel weergeven in nieuwe tab
 View(TSH)
@@ -64,15 +62,15 @@ sd(TSH$FT3, na.rm = TRUE)
 
 #Boxplot TSH
 TSH_1 <-ggplot(TSH, aes(y = TSH))
-TSH_1 + geom_boxplot() + scale_y_continuous(name = "TSH waarde (mU/L)") + ggtitle("Boxplot TSH")
+TSH_1 + geom_boxplot() + scale_y_continuous(name = "TSH waarde (mU/L)") + ggtitle("Boxplot TSH voor toepassen Chauvenette")
 
 #Boxplot FT4
 FT4_1 <-ggplot(TSH, aes(y = FT4))
-FT4_1 + geom_boxplot() + scale_y_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Boxplot FT4")
+FT4_1 + geom_boxplot() + scale_y_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Boxplot FT4 voor toepassen Chauvenette")
 
 #Boxplot FT3
 FT3_1 <-ggplot(data = TSH, aes(y = FT3))
-FT3_1 + geom_boxplot() + scale_y_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Boxplot FT3")
+FT3_1 + geom_boxplot() + scale_y_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Boxplot FT3 voor toepassen Chauvenette")
 
 #Criteria van Chauvenette toepassen op TSH, berekende waarden toegevoegd in een nieuwe kolom genaam 'TSHC'
 TSH$TSHC <- (TSH[,5]-2.301)/2.813338
@@ -108,15 +106,15 @@ FT3_2 + geom_boxplot() + scale_y_continuous(name = "FT3 waarde (pmol/L)") + ggti
 
 #Berekenen cumulatieve frequentie TSH
 TSHecdf <-ggplot(TSHFilter, aes(x = TSH))
-TSHecdf + stat_ecdf() + scale_y_continuous(name = "Cumelatieve frequentie") + scale_x_continuous(name = "TSH waarde (mU/L)") + ggtitle("Cumelatieve frequentie TSH")
+TSHecdf + stat_ecdf() + scale_y_continuous(name = "Cumulatieve frequentie") + scale_x_continuous(name = "TSH waarde (mU/L)") + ggtitle("Cumulatieve frequentie TSH")
 
 #Berekenen cumulatieve frequentie FT4
 FT4ecdf <-ggplot(TSHFilter, aes(x = FT4))
-FT4ecdf + stat_ecdf() + scale_y_continuous(name = "Cumelatieve frequentie") + scale_x_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Cumelatieve frequentie FT4")
+FT4ecdf + stat_ecdf() + scale_y_continuous(name = "Cumulatieve frequentie") + scale_x_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Cumulatieve frequentie FT4")
 
 #Berekenen cumulatieve frequentie FT3
 FT3ecdf <-ggplot(TSHFilter, aes(x = FT3))
-FT3ecdf + stat_ecdf() + scale_y_continuous(name = "Cumelatieve frequentie") + scale_x_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Cumelatieve frequentie FT3")
+FT3ecdf + stat_ecdf() + scale_y_continuous(name = "Cumulatieve frequentie") + scale_x_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Cumulatieve frequentie FT3")
 
 #Verander NA naar 0
 TSHFilter$TSH[is.na(TSHFilter$TSH)] <- 0
@@ -167,7 +165,7 @@ setDT(TSHcsumdata, keep.rownames = TRUE)
 TSHcsumdata$rn <- as.numeric(as.character(TSHcsumdata$rn))
 
 TSHRegLijn <- ggplotRegression(lm(rn ~ as.matrix.TSHcsum., data = TSHcsumdata))
-TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "TSH waarde (mU/L)")
+TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "Cumulatieve frequentie") + scale_y_continuous(name = "TSH waarde (mU/L)")
 TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn")
 TSHRegLijn 
 
@@ -191,7 +189,7 @@ setDT(FT4csumdata, keep.rownames = TRUE)
 FT4csumdata$rn <- as.numeric(as.character(FT4csumdata$rn))
 
 FT4RegLijn <- ggplotRegression(lm(rn ~ as.matrix.FT4csum., data = FT4csumdata))
-FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT4 waarde (pmol/L)")
+FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "Cumulatieve frequentie") + scale_y_continuous(name = "FT4 waarde (pmol/L)")
 FT4RegLijn <- FT4RegLijn + ggtitle("FT4 Regressielijn") 
 FT4RegLijn 
 
@@ -215,7 +213,7 @@ setDT(FT3csumdata, keep.rownames = TRUE)
 FT3csumdata$rn <- as.numeric(as.character(FT3csumdata$rn))
 
 FT3RegLijn <-ggplotRegression(lm(rn ~ as.matrix.FT3csum., data = FT3csumdata))
-FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT3 waarde (pmol/L)")
+FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "Cumulatieve frequentie") + scale_y_continuous(name = "FT3 waarde (pmol/L)")
 FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn") 
 FT3RegLijn 
 
