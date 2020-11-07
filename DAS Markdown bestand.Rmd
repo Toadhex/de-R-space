@@ -40,23 +40,32 @@ TSH <- read_excel(destfile, col_types = c("text",
                                           "numeric", "skip"))
 
  ```
- Met de functie 'qqnorm' wordt de data van (TSH, FT4 of FT3) uitgezet tegen een normaalverdeling. De functie 'qqline' voegt een lijn toe die door het eerste en derde kwartiel loopt. Met de functie 'hist' is een histogram geplot.  
+ Met de functie 'qqnorm' wordt de data van (TSH, FT4 of FT3) uitgezet tegen een normaalverdeling. De functie 'qqline' voegt een lijn toe die door het eerste en derde kwartiel loopt. Met de functie 'hist' is een histogram geplot. De functie 'density' plot een densiteitsgrafiek.  
  
  ```{r}
 #Controleren of TSH normaal is verdeeld m.b.v. qqplot en histogram
-qqnorm(TSH$TSH, pch = 1, frame = FALSE)
+qqnorm(TSH$TSH, pch = 1, frame = FALSE, main = "TSH Normal Q-Q Plot")
 qqline(TSH$TSH, col = "steelblue", lwd = 2)
-hist(TSH$TSH)
+hist(TSH$TSH, main = "Histogram of TSH", xlab = "TSH", col="steelblue")
+DensTSH <- density(TSH$TSH)
+plot(DensTSH, main = "Densityplot of TSH", xlab = "TSH waarde (mU/L)")
+polygon(DensTSH, col="steelblue", border="lightblue")
 
 #Controleren of FT4 normaal is verdeeld m.b.v. qqplot en histogram
-qqnorm(TSH$FT4, pch = 1, frame = FALSE)
+qqnorm(TSH$FT4, pch = 1, frame = FALSE, main = "FT4 Normal Q-Q Plot")
 qqline(TSH$FT4, col = "steelblue", lwd = 2)
-hist(TSH$FT4)
+hist(TSH$FT4, main = "Histogram of FT4", xlab = "FT4", col="steelblue")
+DensFT4 <- density(TSH$FT4, na.rm = TRUE)
+plot(DensFT4, main = "Densityplot of FT4", xlab = "FT4 waarde (pmol/L)")
+polygon(DensFT4, col="steelblue", border="lightblue")
 
 #Controleren of FT3 normaal is verdeeld m.b.v. qqplot en histogram
-qqnorm(TSH$FT3, pch = 1, frame = FALSE)
+qqnorm(TSH$FT3, pch = 1, frame = FALSE, main = "FT3 Normal Q-Q Plot")
 qqline(TSH$FT3, col = "steelblue", lwd = 2)
-hist(TSH$FT3)
+hist(TSH$FT3, main = "Histogram of FT3", xlab = "FT3", col="steelblue")
+DensFT3 <- density(TSH$FT3, na.rm = TRUE)
+plot(DensFT3, main = "Densityplot of FT3", xlab = "FT3 waarde (pmol/L)")
+polygon(DensFT3, col="steelblue", border="lightblue")
  
   ```
 In deze stap zijn statistische waarden van TSH, FT4 en FT3 bepaald. Met de functie 'summary' worden statistische waarden zoals: gemiddelde, mediaan, minimale waarden en maximale waarden bepaald. De functie 'sd' bepaald de standaard deviatie. 
@@ -85,15 +94,15 @@ Hier is een boxplot gemaakt van de ruwedataset om de verandering na elke filters
  ```{r}
 #Boxplot TSH
 TSH_1 <-ggplot(TSH, aes(y = TSH))
-TSH_1 + geom_boxplot()
+TSH_1 + geom_boxplot() + scale_y_continuous(name = "TSH waarde (mU/L)") + ggtitle("Boxplot TSH voor toepassen Chauvenette")
 
 #Boxplot FT4
 FT4_1 <-ggplot(TSH, aes(y = FT4))
-FT4_1 + geom_boxplot() 
+FT4_1 + geom_boxplot() + scale_y_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Boxplot FT4 voor toepassen Chauvenette")
 
 #Boxplot FT3
 FT3_1 <-ggplot(data = TSH, aes(y = FT3))
-FT3_1 + geom_boxplot()
+FT3_1 + geom_boxplot() + scale_y_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Boxplot FT3 voor toepassen Chauvenette")
 
 ```
 In deze stap is het Criterium van Chauvenette toegepast met behulp van de onderstaande formule.
@@ -132,30 +141,30 @@ Om visueel de gefilterde data te vergelijken met de ruwe data is er een boxplot 
  ```{r}
 #Boxplot TSH na filter
 TSH_2 <-ggplot(TSHFilter, aes(y = TSH))
-TSH_2 + geom_boxplot()
+TSH_2 + geom_boxplot() + scale_y_continuous(name = "TSH waarde (mU/L)") + ggtitle("Boxplot TSH na Criterium van Chauvanet")
 
 #Boxplot FT4 na filter
 FT4_2 <-ggplot(TSHFilter, aes(y = FT4))
-FT4_2 + geom_boxplot()
+FT4_2 + geom_boxplot() + scale_y_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Boxplot FT4 na Criterium van Chauvanet")
 
 #Boxplot FT3 na filter
 FT3_2 <-ggplot(TSHFilter, aes(y = FT3))
-FT3_2 + geom_boxplot()
+FT3_2 + geom_boxplot() + scale_y_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Boxplot FT3 na Criterium van Chauvanet")
 
  ```
 In deze stap is een cumulatieve frequentie grafiek geplot met de functie 'stat_ecdf'. Vervolgens is visueel het lineaire gebied bepaald. 
   ```{r}
 #Berekenen cumulatieve frequentie TSH
 TSHecdf <-ggplot(TSHFilter, aes(x = TSH))
-TSHecdf + stat_ecdf()
+TSHecdf + stat_ecdf() + scale_y_continuous(name = "Cumulatieve frequentie") + scale_x_continuous(name = "TSH waarde (mU/L)") + ggtitle("Cumulatieve frequentie TSH")
 
 #Berekenen cumulatieve frequentie FT4
 FT4ecdf <-ggplot(TSHFilter, aes(x = FT4))
-FT4ecdf + stat_ecdf()
+FT4ecdf + stat_ecdf() + scale_y_continuous(name = "Cumulatieve frequentie") + scale_x_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Cumulatieve frequentie FT4")
 
 #Berekenen cumulatieve frequentie FT3
 FT3ecdf <-ggplot(TSHFilter, aes(x = FT3))
-FT3ecdf + stat_ecdf()
+FT3ecdf + stat_ecdf() + scale_y_continuous(name = "Cumulatieve frequentie") + scale_x_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Cumulatieve frequentie FT3")
 ```
 Hier zijn opnieuw de NA-waarden omgezet naar 0 om problemen te voorkomen bij de volgende filterstap.  
 
@@ -180,18 +189,17 @@ TSHFilterCUMFreq <- na_if(TSHFilterCUMFreq, 0)
 Om visueel de de invloed van de bovenstaande filterstap te bekijken is er een boxplot gemaakt van het visueel bepaalde lineairegebied. 
 
  ```{r}
-#Boxplot FT3 na visueel bepalem lineaire deel
-FT3LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT3)) + scale_fill_hue(l=40, c=35)
-FT3LinFil + geom_boxplot() 
-
-
 #Boxplot TSH na visueel bepalem lineaire deel
 TSHLinFil <- ggplot(TSHFilterCUMFreq, aes(y = TSH))
-TSHLinFil + geom_boxplot()
+TSHLinFil + geom_boxplot() + scale_y_continuous(name = "TSH waarde (mU/L)") + ggtitle("Boxplot TSH na Cumulatieve frequentieanalyse")
 
 #Boxplot FT4 na visueel bepalem lineaire deel
 FT4LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT4))
-FT4LinFil + geom_boxplot()
+FT4LinFil + geom_boxplot() + scale_y_continuous(name = "FT4 waarde (pmol/L)") + ggtitle("Boxplot FT4 na Cumulatieve frequentieanalyse")
+
+#Boxplot FT3 na visueel bepalem lineaire deel
+FT3LinFil <- ggplot(TSHFilterCUMFreq, aes(y = FT3)) + scale_fill_hue(l=40, c=35)
+FT3LinFil + geom_boxplot() + scale_y_continuous(name = "FT3 waarde (pmol/L)") + ggtitle("Boxplot FT3 na Cumulatieve frequentieanalyse")
 
  ```
  Om een regressielijn te plotten door het visueel bepaalde lineaire gebied is de functie 'ggplotregression' gemaakt met de onderstaande code.
@@ -233,8 +241,8 @@ Vervolgens is de regressielijn geplot van het visueel bepaalde deel met de funct
 TSHcsumdata$rn <- as.numeric(as.character(TSHcsumdata$rn))
 
 TSHRegLijn <- ggplotRegression(lm(rn ~ as.matrix.TSHcsum., data = TSHcsumdata))
-TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "TSH waarde (mU/L)")
-TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn")
+TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "Cumulatieve frequentie") + scale_y_continuous(name = "TSH waarde (mU/L)")
+TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn") + coord_flip()
 TSHRegLijn 
 
  ```
@@ -261,8 +269,8 @@ setDT(FT4csumdata, keep.rownames = TRUE)
 FT4csumdata$rn <- as.numeric(as.character(FT4csumdata$rn))
 
 FT4RegLijn <- ggplotRegression(lm(rn ~ as.matrix.FT4csum., data = FT4csumdata))
-FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT4 waarde (mU/L)")
-FT4RegLijn <- FT4RegLijn + ggtitle("FT4 Regressielijn") 
+FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "Cumulatieve frequentie") + scale_y_continuous(name = "FT4 waarde (pmol/L)")
+FT4RegLijn <- FT4RegLijn + ggtitle("FT4 Regressielijn") + coord_flip()
 FT4RegLijn 
   
 #Dataset met alleen FT3 aanmaken
@@ -285,12 +293,12 @@ setDT(FT3csumdata, keep.rownames = TRUE)
 FT3csumdata$rn <- as.numeric(as.character(FT3csumdata$rn))
 
 FT3RegLijn <-ggplotRegression(lm(rn ~ as.matrix.FT3csum., data = FT3csumdata))
-FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "Cumelatieve frequentie") + scale_y_continuous(name = "FT3 waarde (mU/L)")
-FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn") 
+FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "Cumulatieve frequentie") + scale_y_continuous(name = "FT3 waarde (pmol/L)")
+FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn") + coord_flip()
 FT3RegLijn 
 
  ```
-In deze laatste stap zijn de refrentie-intervallen, RCV-waarden en afwijkingen met de literatuur bepaald.
+In deze laatste stap van de Hoffman methode zijn de refrentie-intervallen, RCV-waarden en afwijkingen met de literatuur bepaald.
  ```{r}
 
 #Reference Interval Minimum TSH 
@@ -352,7 +360,70 @@ FT3minafw
 #FT3max afwijking met literatuur
 FT3maxafw <- ((FT3RImax/ 6.5)*100)
 FT3maxafw
+```
+Densiteitsgrafieken van de TSH, FT4 en FT3 referentie-intervallen na het toepassen van de Hoffman-methode.
+ ```{r}
+ #Densiteitsgrafiek van het referentie-interval TSH
+DensTSHref <- density(TSHcsumdata$rn)
+plot(DensTSHref, main = "Densityplot of TSH reference-interval", xlab = "TSH waarde (mU/L)")
+polygon(DensTSHref, col="steelblue", border="lightblue")
 
+#Densiteitsgrafiek van het referentie-interval FT3
+DensFT3ref <- density(FT3csumdata$rn)
+plot(DensFT3ref, main = "Densityplot of FT3 reference-interval", xlab = "FT3 waarde (pmol/L)")
+polygon(DensFT3ref, col="steelblue", border="lightblue")
+
+#Densiteitsgrafiek van het referentie-interval FT4
+DensFT4ref <- density(FT4csumdata$rn)
+plot(DensFT4ref, main = "Densityplot of FT4 reference-interval", xlab = "FT4 waarde (pmol/L)")
+polygon(DensFT4ref, col="steelblue", border="lightblue")
+```
+Cooks Distance methode.
+ ```{r}
+#bepalen referentieintervallen TSH middels Cookmethode
+cookTSH <- cook.outliers(TSH$TSH)
+cookTSHmax <-max(sapply(cookTSH$subset, max))
+cookTSHmax
+cookTSHmin <- min(sapply(cookTSH$subset, min))
+cookTSHmin
+
+#bepalen referentieintervallen FT3 middels Cookmethode
+cookFT3 <- cook.outliers(TSH$FT3)
+cookFT3max <- max(sapply(cookFT3$subset, max))
+cookFT3max
+cookFT3min <- min(sapply(cookFT3$subset, min))
+cookFT3min
+
+#bepalen referentieintervallen FT4 middels Cookmethode
+cookFT4 <- cook.outliers(TSH$FT4)
+cookFT4max <- max(sapply(cookFT4$subset, max))
+cookFT4max
+cookFT4min <- min(sapply(cookFT4$subset, min))
+cookFT4min
+
+```
+Horn methode.
+ ```{r}
+#bepalen referentieintervallen TSH middels Hornmethode
+hornTSH <- horn.outliers(TSH$TSH)
+hornTSHmax <- max(sapply(hornTSH$subset, max))
+hornTSHmax
+hornTSHmin <- min(sapply(hornTSH$subset, min))
+hornTSHmin
+
+#bepalen referentieintervallen FT3 middels Hornmethode
+hornFT3 <- horn.outliers(TSH$FT3)
+hornFT3max <- max(sapply(hornFT3$subset, max, na.rm = TRUE))
+hornFT3max
+hornFT3min <- min(sapply(hornFT3$subset, min, na.rm = TRUE))
+hornFT3min
+
+#bepalen referentieintervallen FT4 middels Hornmethode
+hornFT4 <- horn.outliers(TSH$FT4)
+hornFT4max <-max(sapply(hornFT4$subset, max, na.rm = TRUE))
+hornFT4max
+hornFT4min <- min(sapply(hornFT4$subset, min, na.rm = TRUE))
+hornFT4min
 
 
 ```                                          
