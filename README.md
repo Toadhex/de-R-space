@@ -24,17 +24,26 @@ TSH <- read_excel(destfile, col_types = c("text",
 #Controleren of TSH normaal is verdeeld m.b.v. qqplot en histogram
 qqnorm(TSH$TSH, pch = 1, frame = FALSE, main = "TSH Normal Q-Q Plot")
 qqline(TSH$TSH, col = "steelblue", lwd = 2)
-hist(TSH$TSH, main = "Histogram of TSH", xlab = "TSH")
+hist(TSH$TSH, main = "Histogram of TSH", xlab = "TSH", col="steelblue")
+DensTSH <- density(TSH$TSH)
+plot(DensTSH, main = "Densityplot of TSH", xlab = "TSH waarde (mU/L)")
+polygon(DensTSH, col="steelblue", border="lightblue")
 
 #Controleren of FT4 normaal is verdeeld m.b.v. qqplot en histogram
 qqnorm(TSH$FT4, pch = 1, frame = FALSE, main = "FT4 Normal Q-Q Plot")
 qqline(TSH$FT4, col = "steelblue", lwd = 2)
-hist(TSH$FT4, main = "Histogram of FT4", xlab = "FT4")
+hist(TSH$FT4, main = "Histogram of FT4", xlab = "FT4", col="steelblue")
+DensFT4 <- density(TSH$FT4, na.rm = TRUE)
+plot(DensFT4, main = "Densityplot of FT4", xlab = "FT4 waarde (pmol/L)")
+polygon(DensFT4, col="steelblue", border="lightblue")
 
 #Controleren of FT3 normaal is verdeeld m.b.v. qqplot en histogram
 qqnorm(TSH$FT3, pch = 1, frame = FALSE, main = "FT3 Normal Q-Q Plot")
 qqline(TSH$FT3, col = "steelblue", lwd = 2)
-hist(TSH$FT3, main = "Histogram of FT3", xlab = "FT3")
+hist(TSH$FT3, main = "Histogram of FT3", xlab = "FT3", col="steelblue")
+DensFT3 <- density(TSH$FT3, na.rm = TRUE)
+plot(DensFT3, main = "Densityplot of FT3", xlab = "FT3 waarde (pmol/L)")
+polygon(DensFT3, col="steelblue", border="lightblue")
 
 #Datatabel weergeven in nieuwe tab
 View(TSH)
@@ -283,12 +292,19 @@ cookTSHmax <-max(sapply(cookTSH$subset, max))
 cookTSHmax
 cookTSHmin <- min(sapply(cookTSH$subset, min))
 cookTSHmin
+DensCookTSH <- density(cookTSH[["subset"]])
+plot(DensCookTSH, main = "Densityplot of Cooks Distance TSH", xlab = "TSH waarde (mU/L)")
+polygon(DensCookTSH, col="steelblue", border="lightblue")
+
 #bepalen referentieintervallen FT3 middels Cookmethode
 cookFT3 <- cook.outliers(TSH$FT3)
 cookFT3max <- max(sapply(cookFT3$subset, max))
 cookFT3max
 cookFT3min <- min(sapply(cookFT3$subset, min))
 cookFT3min
+DensCookFT3 <- density(cookFT3[["subset"]], na.rm = TRUE)
+plot(DensCookFT3, main = "Densityplot of Cooks Distance FT3", xlab = "FT3 waarde (pmol/L)")
+polygon(DensCookFT3, col="steelblue", border="lightblue")
 
 #bepalen referentieintervallen FT4 middels Cookmethode
 cookFT4 <- cook.outliers(TSH$FT4)
@@ -296,6 +312,9 @@ cookFT4max <- max(sapply(cookFT4$subset, max))
 cookFT4max
 cookFT4min <- min(sapply(cookFT4$subset, min))
 cookFT4min
+DensCookFT4 <- density(cookFT4[["subset"]], na.rm = TRUE)
+plot(DensCookFT4, main = "Densityplot of Cooks Distance FT4", xlab = "FT4 waarde (pmol/L)")
+polygon(DensCookFT4, col="steelblue", border="lightblue")
 
 #bepalen referentieintervallen TSH middels Hornmethode
 hornTSH <- horn.outliers(TSH$TSH)
@@ -303,6 +322,9 @@ hornTSHmax <- max(sapply(hornTSH$subset, max))
 hornTSHmax
 hornTSHmin <- min(sapply(hornTSH$subset, min))
 hornTSHmin
+DensHornTSH <- density(hornTSH[["subset"]])
+plot(DensHornTSH, main = "Densityplot of Horn TSH", xlab = "TSH waarde (mU/L)")
+polygon(DensHornTSH, col="steelblue", border="lightblue")
 
 #bepalen referentieintervallen FT3 middels Hornmethode
 hornFT3 <- horn.outliers(TSH$FT3)
@@ -310,6 +332,9 @@ hornFT3max <- max(sapply(hornFT3$subset, max, na.rm = TRUE))
 hornFT3max
 hornFT3min <- min(sapply(hornFT3$subset, min, na.rm = TRUE))
 hornFT3min
+DensHornFT3 <- density(hornFT3[["subset"]], na.rm = TRUE)
+plot(DensHornFT3, main = "Densityplot of Horn FT3", xlab = "FT3 waarde (pmol/L)")
+polygon(DensHornFT3, col="steelblue", border="lightblue")
 
 #bepalen referentieintervallen FT4 middels Hornmethode
 hornFT4 <- horn.outliers(TSH$FT4)
@@ -317,4 +342,7 @@ hornFT4max <-max(sapply(hornFT4$subset, max, na.rm = TRUE))
 hornFT4max
 hornFT4min <- min(sapply(hornFT4$subset, min, na.rm = TRUE))
 hornFT4min
+DensHornFT4 <- density(hornFT4[["subset"]], na.rm = TRUE)
+plot(DensHornFT4, main = "Densityplot of Horn FT4", xlab = "FT4 waarde (pmol/L)")
+polygon(DensHornFT4, col="steelblue", border="lightblue")
 
