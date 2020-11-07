@@ -175,8 +175,9 @@ TSHcsumdata$rn <- as.numeric(as.character(TSHcsumdata$rn))
 
 TSHRegLijn <- ggplotRegression(lm(rn ~ as.matrix.TSHcsum., data = TSHcsumdata))
 TSHRegLijn <- TSHRegLijn + scale_x_continuous(name = "Cumulatieve frequentie") + scale_y_continuous(name = "TSH waarde (mU/L)")
-TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn")
+TSHRegLijn <- TSHRegLijn + ggtitle("TSH Regressielijn") + coord_flip()
 TSHRegLijn 
+
 
 #Dataset met alleen FT4 aanmaken
 FT4waardes <- TSHFilterCUMFreq$FT4
@@ -199,7 +200,7 @@ FT4csumdata$rn <- as.numeric(as.character(FT4csumdata$rn))
 
 FT4RegLijn <- ggplotRegression(lm(rn ~ as.matrix.FT4csum., data = FT4csumdata))
 FT4RegLijn <- FT4RegLijn + scale_x_continuous(name = "Cumulatieve frequentie") + scale_y_continuous(name = "FT4 waarde (pmol/L)")
-FT4RegLijn <- FT4RegLijn + ggtitle("FT4 Regressielijn") 
+FT4RegLijn <- FT4RegLijn + ggtitle("FT4 Regressielijn") + coord_flip()
 FT4RegLijn 
 
 #Dataset met alleen FT3 aanmaken
@@ -223,7 +224,7 @@ FT3csumdata$rn <- as.numeric(as.character(FT3csumdata$rn))
 
 FT3RegLijn <-ggplotRegression(lm(rn ~ as.matrix.FT3csum., data = FT3csumdata))
 FT3RegLijn <- FT3RegLijn + scale_x_continuous(name = "Cumulatieve frequentie") + scale_y_continuous(name = "FT3 waarde (pmol/L)")
-FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn") 
+FT3RegLijn <- FT3RegLijn + ggtitle("FT3 Regressielijn") + coord_flip()
 FT3RegLijn 
 
 #Reference Interval Minimum TSH 
@@ -285,6 +286,21 @@ FT3minafw
 #FT3max afwijking met literatuur
 FT3maxafw <- ((FT3RImax/ 6.5)*100)
 FT3maxafw
+
+#Densiteitsgrafiek van het referentie-interval TSH
+DensTSHref <- density(TSHcsumdata$rn)
+plot(DensTSHref, main = "Densityplot of TSH reference-interval", xlab = "TSH waarde (mU/L)")
+polygon(DensTSHref, col="steelblue", border="lightblue")
+
+#Densiteitsgrafiek van het referentie-interval FT3
+DensFT3ref <- density(FT3csumdata$rn)
+plot(DensFT3ref, main = "Densityplot of FT3 reference-interval", xlab = "FT3 waarde (pmol/L)")
+polygon(DensFT3ref, col="steelblue", border="lightblue")
+
+#Densiteitsgrafiek van het referentie-interval FT4
+DensFT4ref <- density(FT4csumdata$rn)
+plot(DensFT4ref, main = "Densityplot of FT4 reference-interval", xlab = "FT4 waarde (pmol/L)")
+polygon(DensFT4ref, col="steelblue", border="lightblue")
 
 #bepalen referentieintervallen TSH middels Cookmethode
 cookTSH <- cook.outliers(TSH$TSH)
